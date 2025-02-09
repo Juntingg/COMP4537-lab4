@@ -1,8 +1,7 @@
 module.exports = {
-    message: "Hello %1, What a beautiful day. Server current date and time is ",
-    writeSuccess: "%1 appended succesfully.",
-    missingText: "Missing text query",
-    readError: "Error: %1 not found.",
     error404: "404: Page Not Found",
-    error405: "405: Method not supported"
+    error405: "405: Method not supported",
+    error400: "400: Invalid word",
+    errorJSON: "Invalid JSON format",
+    wordExists: (word) => `${word} already exists`,
 };
