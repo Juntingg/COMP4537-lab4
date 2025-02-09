@@ -8,7 +8,7 @@ class Server {
     port;
     endpoint;
     server;
-    requestCount = 0;
+    reqCount = 0;
     dictionary = new Map();
 
     constructor(port, endpoint) {
@@ -53,7 +53,7 @@ class Server {
     }
 
     handleGet(req, res, query) {
-        this.requestCount++;
+        this.reqCount++;
 
         if (!query.pathname.startsWith(this.endpoint)) {
             res.writeHead(404).end();
@@ -63,7 +63,7 @@ class Server {
     }
 
     async handlePost(req, res, query) {
-        this.requestCount++;
+        this.reqCount++;
 
         if (!query.pathname.startsWith(this.endpoint)) {
             res.writeHead(404).end();
@@ -89,7 +89,7 @@ class Server {
 
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify({
-                message: `Request #${this.requestCount}: Added '${data.word}': ${data.definition}. Total Entries = ${this.dictionary.size}`
+                message: msgs.wordAdded(data.word, data.definition, this.reqCount, this.dictionary.size)
             }));
 
         } catch (err) {
