@@ -8,6 +8,7 @@ class Server {
     port;
     endpoint;
     server;
+    requestCount = 0;
 
     constructor(port, endpoint) {
         this.port = port;
@@ -39,11 +40,24 @@ class Server {
                 return;
             }
 
-            res.writeHead(404, { "Content-Type": "text/html" });
-            res.end(`<p style="color: red;">${msgs.error404}</p>`);
+            if (req.method === "GET") {
+                this.handleGet(req, res, query);
+            } else if (req.method === "POST") {
+                this.handlePost(req, res, query);
+            } else {
+                res.writeHead(405, { "Content-Type": "text/html" });
+                res.end(`<p style="color: red;">${msgs.error405}</p>`);
+            }
         });
     }
 
+    handleGet() {
+        this.requestCount++;
+    }
+
+    handlePost() {
+        this.requestCount++;
+    }
 }
 
 module.exports = Server;
