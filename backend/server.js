@@ -28,7 +28,6 @@ class Server {
     createServer() {
         this.server = http.createServer((req, res) => {
             const q = url.parse(req.url, true);
-            const query = q.query;
 
             res.setHeader("Access-Control-Allow-Origin", "*"); // allows any domain to make requests to server
             res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // defines which HTTP methods allowed
@@ -42,9 +41,9 @@ class Server {
             }
 
             if (req.method === "GET") {
-                this.handleGet(req, res, query);
+                this.handleGet(req, res, q);
             } else if (req.method === "POST") {
-                this.handlePost(req, res, query);
+                this.handlePost(req, res, q);
             } else {
                 res.writeHead(405, { "Content-Type": "text/html" });
                 res.end(`<p style="color: red;">${msgs.error405}</p>`);
@@ -52,12 +51,11 @@ class Server {
         });
     }
 
-    handleGet(req, res, query) {
+    handleGet(req, res, q) {
         this.reqCount++;
-        const word = query.query.word;
+        const word = q.query.word;
 
-
-        if (!query.pathname.startsWith(this.endpoint)) {
+        if (!q.pathname.startsWith(this.endpoint)) {
             res.writeHead(404).end();
             return;
         }
@@ -72,10 +70,10 @@ class Server {
         }
     }
 
-    async handlePost(req, res, query) {
+    async handlePost(req, res, q) {
         this.reqCount++;
 
-        if (!query.pathname.startsWith(this.endpoint)) {
+        if (!q.pathname.startsWith(this.endpoint)) {
             res.writeHead(404).end();
             return;
         }
