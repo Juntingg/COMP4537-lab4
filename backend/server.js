@@ -73,7 +73,7 @@ class Server {
         try {
             const data = await this.parseBody(req); // await parsed body
 
-            if (!data.word || !data.definition) {
+            if (!this.isValidWord(data.word)) {
                 res.writeHead(400, { "Content-Type": "text/plain" });
                 res.end(`<p style="color: red;">${msgs.error400}</p>`);
                 return;
@@ -112,6 +112,10 @@ class Server {
                 }
             });
         });
+    }
+
+    isValidWord(word) {
+        return word.trim() !== "" && !/\d/.test(word);
     }
 }
 
