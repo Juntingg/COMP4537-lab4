@@ -74,7 +74,7 @@ class Server {
             const data = await this.parseBody(req); // await parsed body
 
             if (!this.isValidWord(data.word)) {
-                res.writeHead(400, { "Content-Type": "text/plain" });
+                res.writeHead(400, { "Content-Type": "text/html" });
                 res.end(`<p style="color: red;">${msgs.error400}</p>`);
                 return;
             }
@@ -108,7 +108,7 @@ class Server {
                 try {
                     res(JSON.parse(body)); // resolves with parsed JSON
                 } catch (err) {
-                    rej({ error: err.message }); // rejects if JSON is invalid
+                    rej(new Error(msgs.errorJSON)); // rejects if JSON is invalid
                 }
             });
         });
