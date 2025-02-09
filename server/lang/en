@@ -1,0 +1,7 @@
+module.exports = {
+    message: "Hello %1, What a beautiful day. Server current date and time is ",
+    writeSuccess: "%1 appended succesfully.",
+    missingText: "Missing text query",
+    readError: "Error: %1 not found.",
+    error404: "404: Page Not Found",
+};
