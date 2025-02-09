@@ -1,7 +1,7 @@
 module.exports = {
     error404: "404: Page Not Found",
     error405: "405: Method not supported",
-    error400: "400: Invalid word or definition",
+    error400: "400: Invalid input. Words must contain only letters(a-z, A-Z) with no numbers or symbols.",
     errorJSON: "Invalid JSON format",
     wordFound: (word, definition, reqCount) => `Request #${reqCount} - '${word}': ${definition}.`,
     wordNotFound: (word, reqCount) => `Request #${reqCount} - '${word} not found.`,

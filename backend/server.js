@@ -65,7 +65,7 @@ class Server {
             res.end(JSON.stringify({ message: msgs.wordFound(word, this.dictionary.get(word), this.reqCount) })); // gets word, defiinition, and reqCount
 
         } else {
-            res.writeHead(200, { "Content-Type": "application/json" });
+            res.writeHead(404, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ message: msgs.wordNotFound(word, this.reqCount) }));
         }
     }
@@ -118,7 +118,7 @@ class Server {
     }
 
     isValidWord(word) {
-        return word.trim() !== "" && !/\d/.test(word);
+        return /^[A-Za-z\s]+$/.test(word.trim());
     }
 }
 
