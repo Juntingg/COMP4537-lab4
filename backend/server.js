@@ -9,6 +9,7 @@ class Server {
     endpoint;
     server;
     requestCount = 0;
+    dictionary = new Map();
 
     constructor(port, endpoint) {
         this.port = port;
@@ -51,12 +52,66 @@ class Server {
         });
     }
 
-    handleGet() {
+    handleGet(req, res, query) {
         this.requestCount++;
+
+        if (!query.pathname.startsWith(this.endpoint)) {
+            res.writeHead(404).end();
+            return;
+        }
+
     }
 
-    handlePost() {
+    async handlePost(req, res, query) {
         this.requestCount++;
+
+        if (!query.pathname.startsWith(this.endpoint)) {
+            res.writeHead(404).end();
+            return;
+        }
+
+        try {
+            const data = await this.parseBody(req); // await parsed body
+
+            if (!data.word || !data.definition) {
+                res.writeHead(400, { "Content-Type": "text/plain" });
+                res.end(`<p style="color: red;">${msgs.error400}</p>`);
+                return;
+            }
+
+            if (this.dictionary.has(data.word)) {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: msgs.wordExists(data.word) }));
+                return;
+            }
+
+            this.dictionary.set(data.word, data.definition); // adds word
+
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                message: `Request #${this.requestCount}: Added '${data.word}': ${data.definition}. Total Entries = ${this.dictionary.size}`
+            }));
+
+        } catch (err) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+    }
+
+    parseBody(req) {
+        return new Promise((res, rej) => {
+            let body = "";
+            req.on("data", chunk => {
+                body += chunk;
+            });
+            req.on("end", () => {
+                try {
+                    res(JSON.parse(body)); // resolves with parsed JSON
+                } catch (err) {
+                    rej({ error: err.message }); // rejects if JSON is invalid
+                }
+            });
+        });
     }
 }
 
