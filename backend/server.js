@@ -54,12 +54,22 @@ class Server {
 
     handleGet(req, res, query) {
         this.reqCount++;
+        const word = query.query.word;
+
 
         if (!query.pathname.startsWith(this.endpoint)) {
             res.writeHead(404).end();
             return;
         }
 
+        if (this.dictionary.has(word)) {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: msgs.wordFound(word, this.dictionary.get(word), this.reqCount) })); // gets word, defiinition, and reqCount
+
+        } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: msgs.wordNotFound(word, this.reqCount) }));
+        }
     }
 
     async handlePost(req, res, query) {
@@ -81,7 +91,7 @@ class Server {
 
             if (this.dictionary.has(data.word)) {
                 res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: msgs.wordExists(data.word) }));
+                res.end(JSON.stringify({ message: msgs.wordExists(data.word, this.reqCount) }));
                 return;
             }
 
