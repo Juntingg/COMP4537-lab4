@@ -24,17 +24,18 @@ class Server {
     }
 
     createServer() {
-        this.server = http.createServer((req, res) => { // Fix: Assign server instance
+        this.server = http.createServer((req, res) => {
             const q = url.parse(req.url, true);
             const query = q.query;
 
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Access-Control-Allow-Origin", "*"); // allows any domain to make requests to server
+            res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // defines which HTTP methods allowed
+            res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // allows the client to send custom headers
+            res.setHeader("Content-Type", "application/json"); // response in JSON format
 
+            // handle options
             if (req.method === "OPTIONS") {
-                res.writeHead(204).end();
+                res.writeHead(204).end();  // no content
                 return;
             }
 
@@ -42,8 +43,6 @@ class Server {
             res.end(`<p style="color: red;">${msgs.error404}</p>`);
         });
     }
-
-
 
 }
 
