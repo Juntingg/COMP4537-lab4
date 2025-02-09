@@ -40,13 +40,18 @@ class Server {
                 return;
             }
 
+            if (!q.pathname.startsWith(this.endpoint)) {
+                res.end(JSON.stringify({ message: msgs.error404 })); // page not found
+                return;
+            }
+
             if (req.method === "GET") {
                 this.handleGet(req, res, q);
             } else if (req.method === "POST") {
                 this.handlePost(req, res, q);
             } else {
                 res.writeHead(405, { "Content-Type": "text/html" });
-                res.end(`<p style="color: red;">${msgs.error405}</p>`);
+                res.end(JSON.stringify({ message: msgs.error405 })); // method not supported
             }
         });
     }
@@ -54,11 +59,6 @@ class Server {
     handleGet(req, res, q) {
         this.reqCount++;
         const word = q.query.word;
-
-        if (!q.pathname.startsWith(this.endpoint)) {
-            res.writeHead(404).end();
-            return;
-        }
 
         if (this.dictionary.has(word)) {
             res.writeHead(200, { "Content-Type": "application/json" });
@@ -73,17 +73,12 @@ class Server {
     async handlePost(req, res, q) {
         this.reqCount++;
 
-        if (!q.pathname.startsWith(this.endpoint)) {
-            res.writeHead(404).end();
-            return;
-        }
-
         try {
             const data = await this.parseBody(req); // await parsed body
 
             if (!this.isValidWord(data.word)) {
                 res.writeHead(400, { "Content-Type": "text/html" });
-                res.end(`<p style="color: red;">${msgs.error400}</p>`);
+                res.end(JSON.stringify({ message: msgs.error400 }));
                 return;
             }
 
@@ -108,11 +103,11 @@ class Server {
 
     parseBody(req) {
         return new Promise((res, rej) => {
-            let body = "";
-            req.on("data", chunk => {
-                body += chunk;
+            let body = ""; // empty string to store req data
+            req.on("data", chunk => { // listen for data events
+                body += chunk; // append chunk to body
             });
-            req.on("end", () => {
+            req.on("end", () => { // end when all chunks received
                 try {
                     res(JSON.parse(body)); // resolves with parsed JSON
                 } catch (err) {
