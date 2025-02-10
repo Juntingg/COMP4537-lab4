@@ -1,3 +1,5 @@
+// This code was written with assistance from ChatGPT (OpenAI).
+
 class DictionaryManger {
 
     static API_BASE_URL = "https://shark-app-5cb96.ondigitalocean.app/api/definitions/"
