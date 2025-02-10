@@ -1,3 +1,4 @@
+// This code was assisted by ChatGPT, OpenAI.
 "use strict"
 
 const http = require("http");
@@ -28,7 +29,6 @@ class Server {
     createServer() {
         this.server = http.createServer((req, res) => {
             const q = url.parse(req.url, true);
-            const query = q.query;
 
             res.setHeader("Access-Control-Allow-Origin", "*"); // allows any domain to make requests to server
             res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // defines which HTTP methods allowed
@@ -41,47 +41,51 @@ class Server {
                 return;
             }
 
+            if (!q.pathname.startsWith(this.endpoint)) {
+                res.end(JSON.stringify({ message: msgs.error404 })); // page not found
+                return;
+            }
+
             if (req.method === "GET") {
-                this.handleGet(req, res, query);
+                this.handleGet(req, res, q);
             } else if (req.method === "POST") {
-                this.handlePost(req, res, query);
+                this.handlePost(req, res, q);
             } else {
-                res.writeHead(405, { "Content-Type": "text/html" });
-                res.end(`<p style="color: red;">${msgs.error405}</p>`);
+                res.writeHead(405, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: msgs.error405 })); // method not supported
             }
         });
     }
 
-    handleGet(req, res, query) {
+    handleGet(req, res, q) {
         this.reqCount++;
+        const word = q.query.word;
 
-        if (!query.pathname.startsWith(this.endpoint)) {
-            res.writeHead(404).end();
-            return;
+        if (this.dictionary.has(word)) {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: msgs.wordFound(word, this.dictionary.get(word), this.reqCount) })); // gets word, defiinition, and reqCount
+
+        } else {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: msgs.wordNotFound(word, this.reqCount) }));
         }
-
     }
 
-    async handlePost(req, res, query) {
+    async handlePost(req, res, q) {
         this.reqCount++;
-
-        if (!query.pathname.startsWith(this.endpoint)) {
-            res.writeHead(404).end();
-            return;
-        }
 
         try {
             const data = await this.parseBody(req); // await parsed body
 
             if (!this.isValidWord(data.word)) {
-                res.writeHead(400, { "Content-Type": "text/html" });
-                res.end(`<p style="color: red;">${msgs.error400}</p>`);
+                res.writeHead(400, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: msgs.error400 }));
                 return;
             }
 
             if (this.dictionary.has(data.word)) {
                 res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: msgs.wordExists(data.word) }));
+                res.end(JSON.stringify({ message: msgs.wordExists(data.word, this.reqCount) }));
                 return;
             }
 
@@ -100,11 +104,11 @@ class Server {
 
     parseBody(req) {
         return new Promise((res, rej) => {
-            let body = "";
-            req.on("data", chunk => {
-                body += chunk;
+            let body = ""; // empty string to store req data
+            req.on("data", chunk => { // listen for data events
+                body += chunk; // append chunk to body
             });
-            req.on("end", () => {
+            req.on("end", () => { // end when all chunks received
                 try {
                     res(JSON.parse(body)); // resolves with parsed JSON
                 } catch (err) {
@@ -115,7 +119,7 @@ class Server {
     }
 
     isValidWord(word) {
-        return word.trim() !== "" && !/\d/.test(word);
+        return /^[A-Za-z\s]+$/.test(word.trim());
     }
 }
 
