@@ -1,6 +1,6 @@
 class DictionaryManger {
 
-    static API_BASE_URL = "http://localhost:8000/api/definitions/"
+    static API_BASE_URL = "https://shark-app-5cb96.ondigitalocean.app/api/definitions/"
     static async storeDefinition(word, definition, responseId) {
         if (!this.checkValidation(word) || !this.checkValidation(definition)) {
             responseId.innerHTML = INVALID_INPUT_TEXT;

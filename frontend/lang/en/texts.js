@@ -1,4 +1,4 @@
-const STORE_TITLE_TEXT = "Search Dictionary";
+const STORE_TITLE_TEXT = "Store Dictionary";
 const SEARCH_TITLE_TEXT = "Search Dictionary";
 const SEARCH_WORD_LABEL = "Enter a word";
 const STORE_WORD_LABEL = "Word";
