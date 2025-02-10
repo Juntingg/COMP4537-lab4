@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Dictionary</title>
+    <script src="lang/en/texts.js"></script>
 </head>
 <body>
     <div class="container"></div>
-    <h1 id="title">Search Dictionary</h1>
+    <h1 id="title"></h1>
     <form>
+        <label for="word" id="wordLabel"></label>
         <input id="word" type="text" placeholder="enter a word" required>
-        <button id="submit" type="submit">Search</button>
+        <button id="submit" type="submit"></button>
     </form>
     <div id="search_result"></div>
+    <script src="js/DictionaryManager.js"></script>
+    <script src="js/search.js"></script>
 </body>
 </html>

@@ -5,17 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store Dictionary</title>
+    <script src="lang/en/texts.js"></script>
 </head>
 
 <body>
-    <h1 id="title">Store Dictionary</h1>
+    <h1 id="title"></h1>
     <form>
-        <label for="word">Word:</label>
-        <input type="text" placeholder="enter a word" id="word" required>
+        <label for="word" id="wrodLabel"></label>
+        <input type="text" id="word" required>
         <br />
-        <label for="definition">Definition:</label>
-        <textarea id="definition" placeholder="enter the definition" required></textarea>
+        <label for="definition" id="definitionLabel"></label>
+        <textarea id="definition" required></textarea>
+        <button type="submit" id="submit"></button>
     </form>
+    <div id="messageLabel"></div>
+    <script src="js/DictionaryManager.js"></script>
+    <script src="js/store.js"></script>
 </body>
 
 </html>
