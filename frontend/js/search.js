@@ -8,7 +8,7 @@ submitBtn.addEventListener("click", async (event) => {
     event.preventDefault();
     const wordContent = document.getElementById("word").value;
     resultContainer.innerHTML = "";
-    const result = await DictionaryManger.searchWord(wordContent, resultContainer);
-    resultContainer.innerHTML = result.message;
+    await DictionaryManger.searchWord(wordContent, resultContainer);
+
 
 })

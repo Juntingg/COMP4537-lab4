@@ -56,7 +56,8 @@ class DictionaryManger {
                     return;
                 }
             }
-            return data;
+            responseId.innerHTML = data.message;
+            return;
 
         } catch (error) {
             responseId.innerHTML = SEARCH_ERROR_TEXT;
