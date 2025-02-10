@@ -1,25 +1,25 @@
-class DictionaryManger{
+class DictionaryManger {
 
     static API_BASE_URL = "http://localhost:8000/api/definitions/"
-    static async storeDefinition(word, definition, responseId){
-        if(!this.checkValidation(word) || !this.checkValidation(definition)){
+    static async storeDefinition(word, definition, responseId) {
+        if (!this.checkValidation(word) || !this.checkValidation(definition)) {
             responseId.innerHTML = INVALID_INPUT_TEXT;
         }
-        try{
-            const xhr  = new XMLHttpRequest();
+        try {
+            const xhr = new XMLHttpRequest();
             xhr.open("POST", this.API_BASE_URL);
             xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
 
-            xhr.onload = () =>{
-                if(xhr.status == 200){
+            xhr.onload = () => {
+                if (xhr.status == 200) {
                     const response = JSON.parse(xhr.response);
                     const message = response.message;
-                    if (message){
+                    if (message) {
                         responseId.innerHTML = message;
-                    }else{
+                    } else {
                         responseId.innerHTML = STORE_ERROR_TEXT;
                     }
-                }else{
+                } else {
                     responseId.innerHTML = STORE_ERROR_TEXT;
                 }
             }
@@ -27,34 +27,43 @@ class DictionaryManger{
                 responseId.innerHTML = STORE_ERROR_TEXT;
             }
             xhr.send(JSON.stringify({ "word": word, "definition": definition }));
-        }catch(e){
+        } catch (e) {
             responseId.innerHTML = `${ERROR_TEXT}: ${e}`
         }
     }
 
-    static async searchWord(word, responseId){
+    static async searchWord(word, responseId) {
         if (!this.checkValidation(word)) {
             responseId.innerHTML = INVALID_INPUT_TEXT;
             return;
         }
-        try{
+        try {
             const response = await fetch(
                 `${this.API_BASE_URL}?word=${word}`,
                 {
-                    method:"GET",
+                    method: "GET",
                 }
             );
             const data = await response.json();
-            if(!response.ok){
-                throw new Error(WORD_NOT_FOUND);
+
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    responseId.innerHTML = WORD_NOT_FOUND;
+                    return;
+                } else {
+                    responseId.innerHTML = SEARCH_ERROR_TEXT;
+                    return;
+                }
             }
             return data;
 
-        }catch(e){
-            responseId.innerHTML = e;
+        } catch (error) {
+            responseId.innerHTML = SEARCH_ERROR_TEXT;
+            throw error;
         }
     }
-    static checkValidation(word){
+    static checkValidation(word) {
         if (typeof word !== "string" || word.trim() === "") return false;
         if (/\d/.test(word)) return false;
         return true;
