@@ -4,9 +4,11 @@ const submitBtn = document.getElementById("submit");
 submitBtn.innerText = SEARCH_WORD_BUTTON;
 const resultContainer = document.getElementById("search_result");
 
-submitBtn.addEventListener("click", async(event)=>{
+submitBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
     const wordContent = document.getElementById("word").value;
-    resultContainer.innerHTML="";
-    const result = await DictionaryManger.searchWord(wordContent, "search_result");
+    resultContainer.innerHTML = "";
+    const result = await DictionaryManger.searchWord(wordContent, resultContainer);
+    resultContainer.innerHTML = result.message;
 
 })

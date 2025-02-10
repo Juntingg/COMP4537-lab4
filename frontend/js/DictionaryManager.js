@@ -35,6 +35,7 @@ class DictionaryManger{
     static async searchWord(word, responseId){
         if (!this.checkValidation(word)) {
             responseId.innerHTML = INVALID_INPUT_TEXT;
+            return;
         }
         try{
             const response = await fetch(
@@ -54,8 +55,8 @@ class DictionaryManger{
         }
     }
     static checkValidation(word){
-        if (typeof input !== "string" || word.trim() === "") return false;
-        if (/\d/.test(input)) return false;
+        if (typeof word !== "string" || word.trim() === "") return false;
+        if (/\d/.test(word)) return false;
         return true;
     }
 }
