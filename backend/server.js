@@ -51,7 +51,7 @@ class Server {
             } else if (req.method === "POST") {
                 this.handlePost(req, res, q);
             } else {
-                res.writeHead(405, { "Content-Type": "text/html" });
+                res.writeHead(405, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ message: msgs.error405 })); // method not supported
             }
         });
@@ -78,7 +78,7 @@ class Server {
             const data = await this.parseBody(req); // await parsed body
 
             if (!this.isValidWord(data.word)) {
-                res.writeHead(400, { "Content-Type": "text/html" });
+                res.writeHead(400, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ message: msgs.error400 }));
                 return;
             }
